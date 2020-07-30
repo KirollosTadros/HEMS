@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <iomanip>
 using namespace std;
  
 const char *type[6] = { "Bills" , "Shopping" , "Grocery" , "Fuel" , "Medicine" , "Others"  };
@@ -115,13 +116,13 @@ public:
 		if(this->exp_month > 9)
 		{
 			string str (type[this->t]);
-			return "You Have Made a Credit Card transaction of " + to_string(this->amount) + " CAD in " + str + "\n\n" + "Credit Card Information:\n\n" + "Card Holder Name: " + this->holder_name + "\n\n" + "Expiration Date: " + to_string(this->exp_month) + "/" + to_string(this->exp_year) + "\n\n" + "Car Number: " + this->card_number ;
+			return "You Have Made a Credit Card transaction of " + to_string(this->amount) + " CAD in " + str + "\n\n" + "Credit Card Information:\n\n" + "Card Holder Name: " + this->holder_name + "\n\n" + "Expiration Date: " + to_string(this->exp_month) + "/" + to_string(this->exp_year) + "\n\n" + "Card Number: " + this->card_number ;
 		}
 
 		else
 		{
 			string str (type[this->t]);
-			return "You Have Made a Credit Card transaction of " + to_string(this->amount) + " CAD in " + str + "\n\n" + "Credit Card Information:\n\n" + "Card Holder Name: " + this->holder_name + "\n\n" + "Expiration Date: 0" + to_string(this->exp_month) + "/" + to_string(this->exp_year) + "\n\n" + "Car Number: " + this->card_number ;
+			return "You Have Made a Credit Card transaction of " + to_string(this->amount) + " CAD in " + str + "\n\n" + "Credit Card Information:\n\n" + "Card Holder Name: " + this->holder_name + "\n\n" + "Expiration Date: 0" + to_string(this->exp_month) + "/" + to_string(this->exp_year) + "\n\n" + "Card Number: " + this->card_number ;
 
 		}
 
@@ -259,6 +260,7 @@ class Household {
 
 public:
 
+	Household(){}
 	Household( string name, long id, int n)
 	{
 		this->name = name;
@@ -310,13 +312,14 @@ public:
 
 int main()
 {
+
 	/*
 	*******************
 	****Test Part A****
 	*******************
 	*/
 	cout<<"*********************PART A TEST*******************"<<endl<<endl;
-	cout<<"Welcome to Expense Monitoring System <\nSelect the type of expense/transaction you want to make:\n\n1- Cash/Debit Expense\n\n2- Credit Card Expense"<<endl;
+	cout<<"Welcome to Expense Monitoring System \nSelect the type of expense/transaction you want to make:\n\n1- Cash/Debit Expense\n\n2- Credit Card Expense"<<endl;
 	int x;
 	cin>>x;
 	cout<<"Enter the Expense Amount: ";
@@ -486,5 +489,187 @@ int main()
 		}
 
 	}
+	cout<<endl<<endl;
+
+	cout<<"*********************PART C TEST*******************"<<endl<<endl;
+	/*
+	*******************
+	****Test Part C****
+	*******************
+	*/
+
+
 	
+
+	/*
+	*******************
+	**** Part D****
+	*******************
+	*/
+
+	cout<<"*********************PART D TEST*******************"<<endl<<endl;
+
+	cout<<"Enter Number of Households : ";
+	int household_number;
+	cin>>household_number;
+	Household **House =  new Household*[household_number];
+
+	float **HEMS = new float* [household_number + 1];
+	string **optional = new string * [household_number ];
+
+	for(int i = 0; i < household_number+1; ++i)
+	{
+		HEMS[i] = new float[6];
+		if( i != household_number)
+			optional[i] = new string[6];
+	}
+
+		for (int row = 0 ; row < household_number + 1 ; row++)
+		{
+			for (int col = 0 ; col < 6 ; col++)
+			{
+				HEMS[row][col] = 0;
+				if(row != household_number)
+					optional [row] [col] = "NA";
+			}
+
+			cout<<endl;
+		}
+	
+	for (int k = 0 ; k < household_number ; k++)
+	{
+		cout<<"Enter the Household’s Name: ";
+		string name;
+		getline(cin >> ws, name);
+
+		cout<<"Enter the Household’s  ID Number: ";
+		long id;
+		cin>>id;
+
+		cout<<"Enter the number of Accounts of Household: ";
+		int num;
+		cin>>num;
+	
+		House[k] =  new Household(name, id, num);
+
+		for(int itr = 0 ;itr < num ; itr++ )
+		{
+			cout<< "Select Account Type: \n\n1-	Saving Account\n2-	Checking Account"<<endl;
+			int x;
+			cin>>x;
+			if( x == 1)
+			{
+				cout<<"Enter Initial Balance: ";
+				float balance;
+				cin>>balance;
+
+				cout<<"Account Number: ";
+				long number;
+				cin>>number;
+				cout<<endl<<endl;
+
+				Account *Acc;
+				Acc = new Saving (number, balance, (*House[k]).get_name());
+				(*House[k]).set_account(Acc);
+			}
+
+			if ( x == 2)
+			{
+				cout<<"Credit Card Limit: ";
+				float balance;
+				cin>>balance;
+
+				cout<<"Account Number: ";
+				long number;
+				cin>>number;
+				cout<<endl<<endl;
+
+				Account *Acc;
+				Acc = new Checking (number, balance, (*House[k]).get_name());
+				(*House[k]).set_account(Acc);
+			}
+	
+			cout<<(*House[k]).get_account()<<endl<<endl;
+		}
+	}
+
+	for (int k = 0 ; k < household_number ; k++)
+	{
+		cout<<endl<<endl<<"*************************************"<<endl<<endl<<endl;
+		
+		cout<< "Enter Expanses of " + (*House[k]).get_name()<<endl<<endl;
+		while(1)
+		{
+			cout<<"Select the type of expense/transaction you want to make:\n\n1- Cash/Debit Expense\n\n2- Credit Card Expense\n0- To Exit this Household"<<endl;
+			int x;
+			cin>>x;
+
+			if ( x == 0)
+			{
+				break;
+			}
+
+			cout<<"Enter the Expense Amount: ";
+			float amount;
+			cin>>amount;
+			cout<< "Select the Expense Type:\n\n1- Bills\n\n2- Shopping\n\n3- Grocery\n\n4- Fuel\n\n5- Medicine\n\n6- Others  \n\n 0- To exit this house hold"<<endl;
+			int the_type;
+			cin>>the_type;
+			 
+			if(the_type == 0)
+				break;
+
+			if( x == 1)
+			{
+				CashTransaction cash(amount, the_type);
+				cout<<cash.expenseDetails()<<endl<<endl;
+				HEMS[k][the_type - 1] =  cash.get_amount();
+				optional [k][the_type - 1] = "Cash";
+			}
+
+			if( x == 2)
+			{
+				cout<<"Credit Card Holder: ";
+				string  holder;
+				getline(cin >> ws, holder);
+				cout<<endl;
+				cout<<"Credit Card Exp Month: ";
+				int month;
+				cin>>month;
+				cout<<endl;
+				cout<<"Credit Card Exp Year: ";
+				int year;
+				cin>>year;
+				cout<<endl;
+				cout<<"Credit Card Number: ";
+				string Number;
+				cin>>Number;
+				cout <<endl<<endl;
+				CreditCardTransaction card ( holder, month, year, Number, amount,the_type);
+				cout<<card.expenseDetails()<<endl<<endl;
+				HEMS[k][the_type - 1] =  card.get_amount();
+				optional [k][the_type - 1] = "Credit";
+		}
+	
+		}
+	}
+
+
+
+	cout<<"Bills"<<setw(7)<<setfill(' ')<<"Shopping"<<setw(7)<<setfill(' ') << "Grocery" <<setw(7)<<setfill(' ') << "Fuel" << setw(7)<<setfill(' ')  << "Medicine"  <<setw(7)<<setfill(' ') << "Others"<<endl<<endl;
+	
+
+		for (int row = 0 ; row < household_number + 1 ; row++)
+		{
+			cout<<(*House[row]).get_name()<<setw(7)<<setfill(' ');
+			for (int col = 0 ; col < 6 ; col++)
+			{
+				if(row != household_number)
+					cout<<to_string(HEMS[row][col])+ "(" + optional[row][col] + ")"<<setw(7)<<setfill(' ');
+				else
+					cout<<to_string(HEMS[row][col])<<setw(7)<<setfill(' ');
+			}
+
+			cout<<endl;
+		}
 }
