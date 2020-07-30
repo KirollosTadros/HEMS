@@ -2,19 +2,21 @@
 #include <string>
 using namespace std;
  
+const char *type[6] = { "Bills" , "Shopping" , "Grocery" , "Fuel" , "Medicine" , "Others"  };
+
 class Expense
 {
 protected:
 	float amount;
-	string type;
+	int t;
 
 public:
 	Expense()
 	{}
-	Expense(float amount, string type)
+	Expense(float amount, int t)
 	{
 		this->amount = amount;
-		this->type = type;
+		this->t = t-1;
 	}
 
 	void set_amount(float amount)
@@ -22,9 +24,9 @@ public:
 		this->amount = amount;
 	}
 
-	void set_type(float type)
+	void set_type(int t)
 	{
-		this->type = type;
+		this->t = t-1;
 	}
 
 	float get_amount()
@@ -34,12 +36,13 @@ public:
 
 	string get_type()
 	{
-		return this->type;
+		return type[this->t];
 	}
 
 	string expenseDetails()
 	{
-		return "A " + this->type + " of Amount " + to_string(this->amount);
+		string str(type[this->t]);
+		return "You Have Made a transaction of " + to_string(this->amount) + "CAD in " + to_string(this->t);
 	}
 	
 };
@@ -54,14 +57,15 @@ public:
 		return "Cash";
 	}
 
-	CashTransaction(float amount, string type)
+	CashTransaction(float amount, int t)
 	{
 		this->amount = amount;
-		this->type = type;
+		this->t = t - 1;
 	}
 	string expenseDetails()
 	{
-		return "A " + this->type + " of cash Amount " + to_string(this->amount);
+		string str(type[this->t]);
+		return "You Have Made a CASH/Debit transaction of " + to_string(this->amount) + " CAD in " + str;
 	}	
 
 };
@@ -90,32 +94,34 @@ public:
 		this->card_number =  card_number;
 	}
 
-	CreditCardTransaction(string holder_name, int exp_month, int exp_year, string card_number, float amount, string type)
+	CreditCardTransaction(string holder_name, int exp_month, int exp_year, string card_number, float amount, int t)
 	{
 		this->holder_name =  holder_name;
 		this->exp_month = exp_month;
 		this->exp_year = exp_year;
 		this->card_number =  card_number;
 		this->amount = amount;
-		this->type = type;
+		this->t = t - 1;
 	}
 
-	CreditCardTransaction(float amount, string type)
+	CreditCardTransaction(float amount, int t)
 	{
 		this->amount = amount;
-		this->type = type;
+		this->t = t - 1;
 	}
 
 	string expenseDetails()
 	{
 		if(this->exp_month > 9)
 		{
-			return "A " + this->type + " of Amount " + to_string(this->amount) + "\nWith card number: " + this->card_number + " Holder Name: " + this->holder_name + " Expire Date: " + to_string(this->exp_month) + "/" + to_string(this->exp_year);
+			string str (type[this->t]);
+			return "You Have Made a Credit Card transaction of " + to_string(this->amount) + " CAD in " + str + "\n\n" + "Credit Card Information:\n\n" + "Card Holder Name: " + this->holder_name + "\n\n" + "Expiration Date: " + to_string(this->exp_month) + "/" + to_string(this->exp_year) + "\n\n" + "Car Number: " + this->card_number ;
 		}
 
 		else
 		{
-			return "A " + this->type + " of Amount " + to_string(this->amount) + "\nWith card number: " + this->card_number + " Holder Name: " + this->holder_name + " Expire Date: " + "0" + to_string(this->exp_month) + "/" + to_string(this->exp_year);
+			string str (type[this->t]);
+			return "You Have Made a Credit Card transaction of " + to_string(this->amount) + " CAD in " + str + "\n\n" + "Credit Card Information:\n\n" + "Card Holder Name: " + this->holder_name + "\n\n" + "Expiration Date: 0" + to_string(this->exp_month) + "/" + to_string(this->exp_year) + "\n\n" + "Car Number: " + this->card_number ;
 
 		}
 
@@ -129,6 +135,7 @@ protected:
 	long number;
 	float balance;
 	string owner_name;
+	string type;
 
 public:
 
@@ -181,9 +188,20 @@ public:
 		this->balance = this->balance + amount;
 	}
 
+	void set_type(string type)
+	{
+		this->type = type;
+	}
+
+	string get_type()
+	{
+		return this->type ;
+	}
+
+
 	string info()
 	{
-		return "Account Number: " + to_string(this->number) + " Account Owner: " + this->owner_name + " Current Balance: " + to_string(this->balance);
+		return "Account Number: " + to_string(this->number) + "\n\nAccount Owner: " + this->owner_name + "\n\nCurrent Balance: " + to_string(this->balance) + "\n\nAccount Type: " +this->type;
 	}
 
 	
@@ -195,50 +213,39 @@ class Saving : public Account
 {
 public:
 	Saving(){}
-	Saving(long number, float balance, string owner_name)
+	Saving(long number, float balance, string owner_name, string type = "Saving")
 	{
 		this->number = number;
 		this->balance = balance;
 		this->owner_name = owner_name;
+		this->type = type;
 	}
 
 	string info()
 	{
-		return "Account type : Saving  Account Number: " + to_string(this->number) + " Account Owner: " + this->owner_name + " Current Balance: " + to_string(this->balance);
+		return "Account type : Saving  Account Number: " + to_string(this->number) + " Account Owner: " + this->owner_name + " Current Balance: " + to_string(this->balance) + "Type: " + "Saving";
 
 	}
 
-	
-
-		Saving& operator = (const Account& acc)
-		{
-			(Saving&)(*this) = acc;
-			return *this;
-		}
 };
-
 
 class Checking : public Account
 {
 public:
 	Checking(){}
 
-	Checking(long number, float balance, string owner_name)
+	Checking(long number, float balance, string owner_name , string type = "Checking")
 	{
 		this->number = number;
 		this->balance = balance;
 		this->owner_name = owner_name;
+		this->type = type;
 	}
 
-	Checking& operator = (const Account& acc)
-	{
-		(Checking&)(*this) = acc;
-		return *this;
-	}
 
 	string info()
 	{
-		return "Account type : Checking  Account Number: " + to_string(this->number) + " Account Owner: " + this->owner_name + " Current Balance: " + to_string(this->balance);
+		return "Account type : Checking  Account Number: " + to_string(this->number) + " Account Owner: " + this->owner_name + " Current Balance: " + to_string(this->balance) + "Type: " + "Checking";
 
 	}
 };
@@ -279,6 +286,8 @@ public:
 		this->last_index++;
 	}
 
+
+
 	string get_account()
 	{
 		int i=0;
@@ -286,9 +295,8 @@ public:
 		
 		while(i < this->last_index)
 		{
-			str = str + "\n" + (*arr[i]).info();
+			str = str + "\n\n\n" + "Account " + to_string(i+1) + ":\n"  + (*arr[i]).info();
 			i++;
-		
 		}
 
 		return str;
@@ -308,13 +316,47 @@ int main()
 	*******************
 	*/
 	cout<<"*********************PART A TEST*******************"<<endl<<endl;
-	CashTransaction cash1(325, "Bills"), cash2(422.5, "Fuel"), cash3(181.75, "Grocery");
-	CreditCardTransaction card1 ("Thomas Shelby", 7, 22, "8226485689", 385.5 , "Medicines"), card2 ("Arthur Shelby", 9, 22, "8226542189", 1220 , "Shopping");
-	cout<<cash1.expenseDetails()<<endl<<endl;
-	cout<<cash2.expenseDetails()<<endl<<endl;
-	cout<<cash3.expenseDetails()<<endl<<endl;
-	cout<<card1.expenseDetails()<<endl<<endl;
-	cout<<card2.expenseDetails()<<endl<<endl;
+	cout<<"Welcome to Expense Monitoring System <\nSelect the type of expense/transaction you want to make:\n\n1- Cash/Debit Expense\n\n2- Credit Card Expense"<<endl;
+	int x;
+	cin>>x;
+	cout<<"Enter the Expense Amount: ";
+	float amount;
+	cin>>amount;
+	cout<< "Select the Expense Type:\n\n1- Bills\n\n2- Shopping\n\n3- Grocery\n\n4- Fuel\n\n5- Medicine\n\n6- Others"<<endl;
+	int the_type;
+	cin>>the_type;
+
+	if( x == 1)
+	{
+		CashTransaction cash(amount, the_type);
+		cout<<cash.expenseDetails()<<endl<<endl;
+	}
+
+	if( x == 2)
+	{
+		cout<<"Credit Card Holder: ";
+		string  holder;
+		getline(cin >> ws, holder);
+		cout<<endl;
+		cout<<"Credit Card Exp Month: ";
+		int month;
+		cin>>month;
+		cout<<endl;
+		cout<<"Credit Card Exp Year: ";
+		int year;
+		cin>>year;
+		cout<<endl;
+		cout<<"Credit Card Number: ";
+		string Number;
+		cin>>Number;
+		cout <<endl<<endl;
+		CreditCardTransaction card ( holder, month, year, Number, amount,the_type);
+
+		cout<<card.expenseDetails()<<endl<<endl;
+	}
+
+
+	
 	cout<<"*********************PART A TEST*******************"<<endl<<endl;
 	/*
 	*******************
@@ -322,36 +364,75 @@ int main()
 	*******************
 	*/
 
-	cout<<endl<<endl<<endl;
-
-	/*
-	*******************
-	****Test Part B****
-	*******************
-	*/
-
-	cout<<"*********************PART B TEST*******************"<<endl<<endl;
-	Household H("Shelby", 86234569, 8);
-
-	cout<<"Household id: "<<H.get_id()<<"  Household Name: "<<H.get_name()<<endl;
-	Saving *s = new Saving(569950019, 2880, "Thomas Shleby");
-	Checking *c = new Checking(568420019, 3650.23, "Arthur Shleby");
-	H.set_account(s);
-	H.set_account(c);
-	cout<<"Family Members Account: "<<H.get_account()<<endl;
-	(*s).withdrawal(405);
-	(*c).deposit(220.8);
-
-	cout<<"Family Members Account after transactions: "<<H.get_account()<<endl;
-	cout<<"*********************PART B TEST*******************"<<endl<<endl;
-
-	/*
-	*******************
-	****Test Part B****
-	*******************
-	*/
 	
-	cout<<endl<<endl<<endl;
+	/*
+	*******************
+	****Test Part B****
+	*******************
+	*/
+
+	cout<<"*********************PART B TEST*******************"<<endl<<endl;
+
+	cout<<"Enter the Household’s Name: ";
+	string name;
+	getline(cin >> ws, name);
+
+	cout<<"Enter the Household’s  ID Number: ";
+	long id;
+	cin>>id;
+
+	cout<<"Enter the number of Accounts of Household: ";
+	int n;
+	cin>>n;
+	
+	Household H(name, id, n);
+
+	for(int i = 0 ;i < n ; i++ )
+	{
+		cout<< "Select Account Type: \n\n1-	Saving Account\n2-	Checking Account"<<endl;
+		cin>>x;
+		if( x == 1)
+		{
+			cout<<"Enter Initial Balance: ";
+			float balance;
+			cin>>balance;
+
+			cout<<"Account Number: ";
+			long number;
+			cin>>number;
+			cout<<endl<<endl;
+
+			Account *Acc;
+			Acc = new Saving (number, balance, H.get_name());
+			H.set_account(Acc);
+		}
+
+		if ( x == 2)
+		{
+			cout<<"Credit Card Limit: ";
+			float balance;
+			cin>>balance;
+
+			cout<<"Account Number: ";
+			long number;
+			cin>>number;
+			cout<<endl<<endl;
+
+			Account *Acc;
+			Acc = new Checking (number, balance, H.get_name());
+			H.set_account(Acc);
+		}
+	
+		cout<<H.get_account()<<endl<<endl;
+	}
+
+	cout<<"*********************PART B TEST*******************"<<endl<<endl;
+	/*
+	*******************
+	****Test Part B****
+	*******************
+	*/
+
 
 	/*
 	*******************
@@ -360,181 +441,50 @@ int main()
 	*/
 
 	cout<<"*********************PART C TEST*******************"<<endl<<endl;
-	Account acc(135001250028,  8852.2, "John Shelby");
-	cout<<acc.info()<<endl;
-	acc.withdrawal(440);
-	cout<<"Account after withdrawal 440:"<<endl;
-	cout<<acc.info()<<endl;
-	acc.deposit(120.5);
-	cout<<"Account after deposit 120.5: "<<endl;
-	cout<<acc.info()<<endl;
-	cout<<"*********************PART C TEST*******************"<<endl<<endl;
-
-
-	/*
-	*******************
-	****Test Part C****
-	*******************
-	*/
-
-
-	/*
-	*******************
-	****Test Part D****
-	*******************
-	*/
-
-	Household H1("Family1", 159545, 2);
-	Household H2("Family2", 26548, 1);
-	Household H3("Family3", 951485, 2);
-	Household H4("Family4", 8421569, 1);
-
-
-	Saving *acc1 = new Saving ( 5635346, 15540.25, "account1");
-	Checking *acc2 = new Checking ( 5626696, 15040.25, "account2");
-	Saving *acc3 = new Saving ( 5626346, 12440.25, "account3");
-	Saving *acc4 = new Saving ( 5626846, 155040.25, "account4");
-	Checking *acc5 = new Checking ( 5626346, 11140.25, "account5");
-	Saving *acc6 = new Saving ( 5654646, 1145640.25, "account6");
-
-
-
-
-	CreditCardTransaction trans1 (240, "Bills");
-	CashTransaction trans2 (112.5, "Shopping");
-	CreditCardTransaction trans3 (585, "Fuel");
-
-	CreditCardTransaction trans4 (255, "Bills");
-	CreditCardTransaction trans5 (417.5, "Shopping");
-	CashTransaction trans6 (85, "Grocery");
-
-	CreditCardTransaction trans7 (410, "Bills");
-	CreditCardTransaction trans8 (841.8, "Shopping");
-
-	CashTransaction trans9 (805, "Bills");
-	CreditCardTransaction trans10 (1024.5, "Shopping");
-
-	H1.set_account(acc1);
-	H1.set_account(acc2);
-
-	H2.set_account(acc3);
-
-	H3.set_account(acc4);
-	H3.set_account(acc5);
-
-	H4.set_account(acc6);
-
-	cout<<"Household: "<<H1.get_name()<<" Accounts Before Transactions: "<<H1.get_account()<<endl<<endl;
-	cout<<"Household: "<<H2.get_name()<<" Accounts Before Transactions: "<<H2.get_account()<<endl<<endl;
-	cout<<"Household: "<<H3.get_name()<<" Accounts Before Transactions: "<<H3.get_account()<<endl<<endl;
-	cout<<"Household: "<<H4.get_name()<<" Accounts Before Transactions: "<<H4.get_account()<<endl<<endl;
-
-	(*acc1).withdrawal(trans1.get_amount());
-	(*acc1).withdrawal(trans2.get_amount());
-	(*acc2).withdrawal(trans3.get_amount());
-
-	(*acc3).withdrawal(trans4.get_amount());
-	(*acc3).withdrawal(trans5.get_amount());
-	(*acc3).withdrawal(trans6.get_amount());
-
-	(*acc4).withdrawal(trans7.get_amount());
-	(*acc5).withdrawal(trans8.get_amount());
-
-	(*acc6).withdrawal(trans9.get_amount());
-	(*acc6).withdrawal(trans10.get_amount());
-
-
-	cout<<"Household: "<<H1.get_name()<<" Accounts After Transactions: "<<H1.get_account()<<endl<<endl;
-	cout<<"Household: "<<H2.get_name()<<" Accounts After Transactions: "<<H2.get_account()<<endl<<endl;
-	cout<<"Household: "<<H3.get_name()<<" Accounts After Transactions: "<<H3.get_account()<<endl<<endl;
-	cout<<"Household: "<<H4.get_name()<<" Accounts After Transactions: "<<H4.get_account()<<endl<<endl;
-
-	float HEMS [5][4];
-
-	string HEMS_type [4][4];
-
-	HEMS[0][0] = trans1.get_amount();
-	HEMS[0][1] = trans2.get_amount();
-	HEMS[0][2] = 0;
-	HEMS[0][3] = trans3.get_amount();
-
-	HEMS[1][0] = trans4.get_amount();
-	HEMS[1][1] = trans5.get_amount();
-	HEMS[1][2] = trans6.get_amount();
-	HEMS[1][3] = 0;
-
-	HEMS[2][0] = trans7.get_amount();
-	HEMS[2][1] = trans8.get_amount();
-	HEMS[2][2] = 0;
-	HEMS[2][3] = 0;
-
-	HEMS[3][0] = trans9.get_amount();
-	HEMS[3][1] = trans10.get_amount();
-	HEMS[3][2] = 0;
-	HEMS[3][3] = 0;
-
 	
-	
-	HEMS_type[0][0] = trans1.theType();
-	HEMS_type[0][1] = trans2.theType();
-	HEMS_type[0][2] = "NA";
-	HEMS_type[0][3] = trans3.theType();
-
-	HEMS_type[1][0] = trans4.theType();
-	HEMS_type[1][1] = trans5.theType();
-	HEMS_type[1][2] = trans6.theType();
-	HEMS_type[1][3] ="NA";
-
-	HEMS_type[2][0] = trans7.theType();
-	HEMS_type[2][1] = trans8.theType();
-	HEMS_type[2][2] = "NA";
-	HEMS_type[2][3] = "NA";
-
-	HEMS_type[3][0] = trans9.theType();
-	HEMS_type[3][1] = trans10.theType();
-	HEMS_type[3][2] = "NA";
-	HEMS_type[3][3] = "NA";
-
-
-
-	for(int i = 0 ; i < 4 ; i++)
+	Account *arr[3];
+	for(int i = 0 ;i < 3 ; i++ )
 	{
-		HEMS[4][i] = 0;
-		for(int j = 0 ; j < 4 ; j++)
-			HEMS[4][i] += HEMS[j][i];
+		cout<< "Select Account Type: \n\n1-	Saving Account\n2-	Checking Account"<<endl;
+		cin>>x;
+		if( x == 1)
+		{
+			cout<<"Enter Initial Balance: ";
+			float balance;
+			cin>>balance;
+			cout<<"Account Number: ";
+			long number;
+			cin>>number;
+
+			cout<<"Account Owner: ";
+			string name;
+			cin>>name;
+			cout<<endl<<endl;
+			arr[i] = new Saving (number, balance, name);
+
+		}
+
+		if ( x == 2)
+		{
+			cout<<"Credit Card Limit: ";
+			float balance;
+			cin>>balance;
+			cout<<"Account Number: ";
+			long number;
+			cin>>number;
+
+			cout<<"Account Owner: ";
+			string name;
+			cin>>name;
+			cout<<endl<<endl;
+			arr[i] = new Checking (number, balance, name);
+		}
+		
+		for(int j = 0 ; j <= i ; j++ )
+		{
+			cout<<(*arr[j]).info();
+		}
+
 	}
-
-
-	for(int i = 0 ; i < 5 ; i++)
-	{
-		if(i == 0)
-		cout<<"Bills\t\tShopping\tGrocery\t\tFuel"<<endl<<endl;
-		for(int j = 0 ; j < 4 ; j++)
-			cout<<HEMS[i][j]<<"\t\t";
-
-		cout<<endl<<endl;
-	}
-
-	cout<<endl<<endl<<endl;
-
-
-		for(int i = 0 ; i < 4 ; i++)
-	{
-		if(i == 0)
-		cout<<"Bills\t\t\tShopping\t\tGrocery\t\tFuel"<<endl<<endl;
-		for(int j = 0 ; j < 4 ; j++)
-			cout<<HEMS[i][j]<<"("<<HEMS_type[i][j]<<")"<<"\t\t";
-
-		cout<<endl<<endl;
-	}
-
-
-
-
-	/*
-	*******************
-	****Test Part D****
-	*******************
-	*/
 	
 }
